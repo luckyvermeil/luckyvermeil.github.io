@@ -1,0 +1,230 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>运筹学笔记01-线性规划与单纯形法的原理 | Mathmiao</title><meta name="keywords" content="数学"><meta name="author" content="Luckyvermeil"><meta name="copyright" content="Luckyvermeil"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="线性规划线性规划的标准形式  \begin{align} \max\quad &amp;z&#x3D;c&#39;x\\ \mbox{s.t.}\quad   &amp;Ax &#x3D;b\\   &amp;x_{i} \geq 0 \end{align}其中b称之为资源向量, c称之为价值向量, A为约束条件的系数矩阵, $x_i$为决策变量.我们称满足约束条件(2)(3)的解为可行解, 所有可行解的集合称为可行域, 使目标函数$z$达到最大值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="运筹学笔记01-线性规划与单纯形法的原理">
+<meta property="og:url" content="http://mathmiao.com/2022/04/11/789734/index.html">
+<meta property="og:site_name" content="Mathmiao">
+<meta property="og:description" content="线性规划线性规划的标准形式  \begin{align} \max\quad &amp;z&#x3D;c&#39;x\\ \mbox{s.t.}\quad   &amp;Ax &#x3D;b\\   &amp;x_{i} \geq 0 \end{align}其中b称之为资源向量, c称之为价值向量, A为约束条件的系数矩阵, $x_i$为决策变量.我们称满足约束条件(2)(3)的解为可行解, 所有可行解的集合称为可行域, 使目标函数$z$达到最大值">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta property="article:published_time" content="2022-04-11T03:13:15.000Z">
+<meta property="article:modified_time" content="2022-04-11T03:15:51.538Z">
+<meta property="article:author" content="Luckyvermeil">
+<meta property="article:tag" content="数学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://mathmiao.com/2022/04/11/789734/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '运筹学笔记01-线性规划与单纯形法的原理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-04-11 11:15:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/100037919?v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Mathmiao</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">运筹学笔记01-线性规划与单纯形法的原理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-04-11T03:13:15.000Z" title="发表于 2022-04-11 11:13:15">2022-04-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-04-11T03:15:51.538Z" title="更新于 2022-04-11 11:15:51">2022-04-11</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="运筹学笔记01-线性规划与单纯形法的原理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="线性规划"><a href="#线性规划" class="headerlink" title="线性规划"></a>线性规划</h2><p>线性规划的标准形式</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\max\quad &z=c'x\\
+\mbox{s.t.}\quad
+  &Ax =b\\
+  &x_{i} \geq 0
+\end{align}</script><p>其中b称之为<strong>资源向量</strong>, c称之为<strong>价值向量</strong>, A为约束条件的系数矩阵, $x_i$为<strong>决策变量</strong>.<br>我们称满足约束条件(2)(3)的解为可行解, 所有可行解的集合称为可行域, 使目标函数$z$达到最大值的可行解为最优解.</p>
+<h2 id="凸集与凸组合"><a href="#凸集与凸组合" class="headerlink" title="凸集与凸组合"></a>凸集与凸组合</h2><p>在欧氏空间中，如果对于某集合内的每一对点，连接该对点的直线段上的每个点也在该集合内,称该集合为<strong>凸集</strong>.(人话来说就是该集合没有空洞也没有缺口和凹陷).<br>设向量${x_i}$如有实数$\lambda_i\geq0$,且$\sum \lambda_i=1$ ，则称$\sum\lambda_i x_i$为向量$\{x\}$的一个<strong>凸组合</strong>(比如数轴上两个点,在两个点连成线段之间的点可以表示成凸组合,在线段之外的点不能表示成凸组合,多维同理).</p>
+<h2 id="基解和基可行解和可行解"><a href="#基解和基可行解和可行解" class="headerlink" title="基解和基可行解和可行解"></a>基解和基可行解和可行解</h2><p><strong>例题1</strong><br>找出以下线性规划问题的基解和基可行解</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\min\quad &z=2x_1+3x_2+4x_3+7x_4\\
+\mbox{s.t.}\quad
+
+  &2x_1+3x_2-x_3-x_4\leq8\\
+  &-x_1+2x_2-6x_3+7x_4\leq3\\
+
+  &x_{i} \geq 0
+
+\end{align}</script><p>先写出问题的系数矩阵$A$</p>
+<script type="math/tex; mode=display">
+A=
+\begin{pmatrix}
+  2&3&-1&-4\\
+  -1&2&-6&7\\
+\end{pmatrix}</script><p>A是一个2x4矩阵, 记它的四个列向量为$a_1\,a_2\,a_3\,a_4$, 则其中任意两个线性无关的向量可以构成A的一组基.由于$a_i$两两不相关, 我们可以得到$C_4^2=6$组基.取$a_1$和$a_2$, 得到其中一组基组成的矩阵为</p>
+<script type="math/tex; mode=display">
+\begin{pmatrix}
+  2&3\\
+  -1&2\\
+\end{pmatrix}</script><p>我们称基对应的决策变量为<strong>基变量</strong>, 不对应基向量的决策变量为<strong>非基变量</strong>. 对于基$a_1$,$a_2$, $x_1$,$x_2$为基变量, $x_3$,$x_4$为非基变量.<br>令非基变量为0(只能取0),带入约束条件的边界方程中,得到</p>
+<script type="math/tex; mode=display">
+\begin{align}
+  2&x_1&+3&x_2&=8\\
+  -&x_1&+2&x_2&=3\\
+\end{align}</script><p>容易解出原问题的一个解$\begin{pmatrix}<br>  1\\<br>  2\\<br>  0\\<br>  0\\<br>\end{pmatrix}$.我们称这样得到的解为$基解$. 基解由$(5),(6)$的边界方程得到,所以显然满足约束$(2)$,它只需再满足非负约束$(3)$,就是原线性规划的可行解.我们称这样由基得到的可行解为<strong>基可行解</strong>.</p>
+<p>对于基可行解,我们有以下结论<br><strong>1.若线性规划问题存在可行解，则该问题的可行域是凸集.</strong><br><strong>2.线性规划问题的基可行解对应可行域的顶点。</strong><br>(我们可以形象的理解这一点,线性规划所有可行解都可以表示成基解的凸组合,那么基解如果在可行域上则只能在顶点上.)<br><strong>3.若线性规划存在最优解，一定存在一个基可行解是最优解。</strong>  </p>
+<p>可行域上使目标函数最大(小)的解称为<strong>最优解</strong>.如果可行域是空的,称该线性规划<strong>无解</strong>,如果某个解的变量无穷大,导致最后目标函数也无穷大,则称该线性规划有<strong>无界解</strong></p>
+<h2 id="单纯形法的原理"><a href="#单纯形法的原理" class="headerlink" title="单纯形法的原理"></a>单纯形法的原理</h2><p><img src="https://files.mdnice.com/user/7501/cbf3bea4-52d0-4e62-8007-e3b15ba1de7e.png" alt="img1"><br>如图所示,只要辅助直线DE向使目标函数的值(截距)增大的右上方移动,经过A和B两个点,一定能到达最优解C点.</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E5%AD%A6/">数学</a></div><div class="post_share"><div class="social-share" data-image="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/04/11/789723/"><img class="next-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">重要极限公式和等价无穷小的使用条件和一道典型错题</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/04/11/789723/" title="重要极限公式和等价无穷小的使用条件和一道典型错题"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-11</div><div class="title">重要极限公式和等价无穷小的使用条件和一道典型错题</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/100037919?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Luckyvermeil</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/luckyvemeil"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Hello,World!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E8%A7%84%E5%88%92"><span class="toc-number">1.</span> <span class="toc-text">线性规划</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%B8%E9%9B%86%E4%B8%8E%E5%87%B8%E7%BB%84%E5%90%88"><span class="toc-number">2.</span> <span class="toc-text">凸集与凸组合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E8%A7%A3%E5%92%8C%E5%9F%BA%E5%8F%AF%E8%A1%8C%E8%A7%A3%E5%92%8C%E5%8F%AF%E8%A1%8C%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">基解和基可行解和可行解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E7%BA%AF%E5%BD%A2%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">单纯形法的原理</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/04/11/789734/" title="运筹学笔记01-线性规划与单纯形法的原理"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="运筹学笔记01-线性规划与单纯形法的原理"/></a><div class="content"><a class="title" href="/2022/04/11/789734/" title="运筹学笔记01-线性规划与单纯形法的原理">运筹学笔记01-线性规划与单纯形法的原理</a><time datetime="2022-04-11T03:13:15.000Z" title="发表于 2022-04-11 11:13:15">2022-04-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/11/789723/" title="重要极限公式和等价无穷小的使用条件和一道典型错题"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="重要极限公式和等价无穷小的使用条件和一道典型错题"/></a><div class="content"><a class="title" href="/2022/04/11/789723/" title="重要极限公式和等价无穷小的使用条件和一道典型错题">重要极限公式和等价无穷小的使用条件和一道典型错题</a><time datetime="2022-04-11T03:13:09.000Z" title="发表于 2022-04-11 11:13:09">2022-04-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 By Luckyvermeil</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
